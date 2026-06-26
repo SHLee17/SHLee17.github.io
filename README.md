@@ -8,21 +8,33 @@
     html, body {
       margin: 0;
       height: 100%;
-      scroll-snap-type: y mandatory;
-      overflow-y: scroll;
       font-family: 'Segoe UI', sans-serif;
+    }
+
+    /* 스크롤 컨테이너: PPT처럼 한 화면씩 딱 멈추도록 mandatory + always 설정 */
+    .slides {
+      height: 100vh;
+      height: 100dvh;
+      overflow-y: scroll;
+      scroll-snap-type: y mandatory;
+      scroll-behavior: smooth;
     }
 
     section {
       height: 100vh;
+      height: 100dvh;
       display: flex;
       flex-direction: column;
       justify-content: center;
       align-items: center;
+      box-sizing: border-box;
+      padding: 40px 20px;
       scroll-snap-align: start;
-      transition: opacity 1s ease, transform 1s ease;
+      scroll-snap-stop: always; /* 휙 스크롤해도 한 슬라이드씩만 이동 */
+      transition: opacity 0.8s ease, transform 0.8s ease;
       opacity: 0;
-      transform: translateY(50px);
+      transform: translateY(40px);
+      position: relative;
     }
 
     section.visible {
@@ -34,6 +46,12 @@
       background: linear-gradient(135deg, #667eea, #764ba2);
       color: white;
       text-align: center;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
     }
     header img {
       width: 160px;
@@ -70,6 +88,7 @@
     ul.skills {
       list-style: none;
       padding: 0;
+      text-align: center;
     }
     ul.skills li {
       display: inline-block;
@@ -80,88 +99,158 @@
       border-radius: 20px;
       font-weight: bold;
     }
+
+    /* 슬라이드 진행 표시(우측 점 네비게이션) - PPT 느낌 강화 */
+    .dots {
+      position: fixed;
+      right: 20px;
+      top: 50%;
+      transform: translateY(-50%);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      z-index: 100;
+    }
+    .dots button {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      border: 2px solid #888;
+      background: transparent;
+      cursor: pointer;
+      padding: 0;
+      transition: background 0.3s, border-color 0.3s, transform 0.3s;
+    }
+    .dots button.active {
+      background: #667eea;
+      border-color: #667eea;
+      transform: scale(1.3);
+    }
+
+    @media (max-width: 600px) {
+      .dots { right: 10px; gap: 10px; }
+      .dots button { width: 9px; height: 9px; }
+    }
   </style>
 </head>
 <body>
 
-  <!-- 첫 화면 -->
-  <section id="home" class="visible">
-    <header>
-      <img src="profile.jpg" alt="내 사진">
-      <h1>홍길동</h1>
-      <nav>
-        <a href="#career">경력</a>
-        <a href="#skills">스킬</a>
-        <a href="#portfolio">포트폴리오</a>
-        <a href="#about">자기소개</a>
-      </nav>
-    </header>
-  </section>
+  <!-- 슬라이드 진행 표시 -->
+  <div class="dots" id="dots"></div>
 
-  <!-- 경력 -->
-  <section id="career">
-    <h2>경력</h2>
-    <div class="card">
-      <h3>○○ 회사 (2020 - 현재)</h3>
-      <p>웹 개발자로 근무하며 프론트엔드 및 백엔드 프로젝트 담당</p>
-    </div>
-    <div class="card">
-      <h3>△△ 스타트업 (2018 - 2020)</h3>
-      <p>프론트엔드 엔지니어로 React 기반 서비스 개발</p>
-    </div>
-  </section>
+  <div class="slides" id="slides">
 
-  <!-- 스킬 -->
-  <section id="skills">
-    <h2>스킬</h2>
-    <ul class="skills">
-      <li>HTML</li>
-      <li>CSS</li>
-      <li>JavaScript</li>
-      <li>React</li>
-      <li>Node.js</li>
-      <li>Git/GitHub</li>
-    </ul>
-  </section>
+    <!-- 첫 화면 -->
+    <section id="home" class="visible">
+      <header>
+        <img src="profile.jpg" alt="내 사진">
+        <h1>홍길동</h1>
+        <nav>
+          <a href="#career">경력</a>
+          <a href="#skills">스킬</a>
+          <a href="#portfolio">포트폴리오</a>
+          <a href="#about">자기소개</a>
+        </nav>
+      </header>
+    </section>
 
-  <!-- 포트폴리오 -->
-  <section id="portfolio">
-    <h2>포트폴리오</h2>
-    <div class="card">
-      <h3>프로젝트 A</h3>
-      <p>React 기반 웹앱, 사용자 인증 및 데이터 시각화 기능 구현</p>
-    </div>
-    <div class="card">
-      <h3>프로젝트 B</h3>
-      <p>Node.js API 서버, RESTful 엔드포인트 설계 및 배포</p>
-    </div>
-  </section>
+    <!-- 경력 -->
+    <section id="career">
+      <h2>경력</h2>
+      <div class="card">
+        <h3>○○ 회사 (2020 - 현재)</h3>
+        <p>웹 개발자로 근무하며 프론트엔드 및 백엔드 프로젝트 담당</p>
+      </div>
+      <div class="card">
+        <h3>△△ 스타트업 (2018 - 2020)</h3>
+        <p>프론트엔드 엔지니어로 React 기반 서비스 개발</p>
+      </div>
+    </section>
 
-  <!-- 자기소개 -->
-  <section id="about">
-    <h2>자기소개</h2>
-    <div class="card">
-      <p>안녕하세요! 저는 웹 개발자 홍길동입니다.  
-      새로운 기술을 배우고 적용하는 것을 좋아하며, 사용자 경험을 개선하는 데 관심이 많습니다.  
-      앞으로도 다양한 프로젝트를 통해 성장하고 싶습니다.</p>
-    </div>
-  </section>
+    <!-- 스킬 -->
+    <section id="skills">
+      <h2>스킬</h2>
+      <ul class="skills">
+        <li>HTML</li>
+        <li>CSS</li>
+        <li>JavaScript</li>
+        <li>React</li>
+        <li>Node.js</li>
+        <li>Git/GitHub</li>
+      </ul>
+    </section>
+
+    <!-- 포트폴리오 -->
+    <section id="portfolio">
+      <h2>포트폴리오</h2>
+      <div class="card">
+        <h3>프로젝트 A</h3>
+        <p>React 기반 웹앱, 사용자 인증 및 데이터 시각화 기능 구현</p>
+      </div>
+      <div class="card">
+        <h3>프로젝트 B</h3>
+        <p>Node.js API 서버, RESTful 엔드포인트 설계 및 배포</p>
+      </div>
+    </section>
+
+    <!-- 자기소개 -->
+    <section id="about">
+      <h2>자기소개</h2>
+      <div class="card">
+        <p>안녕하세요! 저는 웹 개발자 홍길동입니다.
+        새로운 기술을 배우고 적용하는 것을 좋아하며, 사용자 경험을 개선하는 데 관심이 많습니다.
+        앞으로도 다양한 프로젝트를 통해 성장하고 싶습니다.</p>
+      </div>
+    </section>
+
+  </div>
 
   <script>
-    // 스크롤 시 애니메이션 효과
-    const sections = document.querySelectorAll("section");
-    const options = { threshold: 0.3 };
+    const slidesContainer = document.getElementById('slides');
+    const sections = Array.from(document.querySelectorAll('section'));
+    const dotsWrap = document.getElementById('dots');
+
+    // 점 네비게이션 생성
+    sections.forEach((sec, i) => {
+      const btn = document.createElement('button');
+      btn.setAttribute('aria-label', sec.id);
+      if (i === 0) btn.classList.add('active');
+      btn.addEventListener('click', () => {
+        sections[i].scrollIntoView({ behavior: 'smooth' });
+      });
+      dotsWrap.appendChild(btn);
+    });
+    const dotButtons = Array.from(dotsWrap.children);
+
+    // 스크롤 시 페이드인 애니메이션 + 현재 슬라이드 추적
+    let currentIndex = 0;
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach(entry => {
-        if(entry.isIntersecting){
-          entry.target.classList.add("visible");
+        const index = sections.indexOf(entry.target);
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+        if (entry.intersectionRatio > 0.5) {
+          currentIndex = index;
+          dotButtons.forEach((d, i) => d.classList.toggle('active', i === index));
         }
       });
-    }, options);
+    }, { threshold: [0.5] });
 
-    sections.forEach(section => {
-      observer.observe(section);
+    sections.forEach(section => observer.observe(section));
+
+    // 방향키(↑↓)로 PPT처럼 한 슬라이드씩 이동
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'PageDown') {
+        e.preventDefault();
+        const next = Math.min(currentIndex + 1, sections.length - 1);
+        sections[next].scrollIntoView({ behavior: 'smooth' });
+      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
+        e.preventDefault();
+        const prev = Math.max(currentIndex - 1, 0);
+        sections[prev].scrollIntoView({ behavior: 'smooth' });
+      }
     });
   </script>
 
