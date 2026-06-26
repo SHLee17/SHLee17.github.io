@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="UTF-8">
@@ -47,8 +48,10 @@
       transform: translateY(0);
     }
 
+    #home { background: linear-gradient(135deg, #667eea, #764ba2); }
+
     header {
-      background: linear-gradient(135deg, #667eea, #764ba2);
+      background: transparent;
       color: white;
       text-align: center;
       width: 100%;
@@ -86,10 +89,34 @@
       color: #ffd700;
     }
 
+    #education { background: #ede7f6; }
     #career { background: #f9f9f9; }
     #skills { background: #e3f2fd; }
     #portfolio { background: #fff3e0; }
     #about { background: #f0f0f0; }
+
+    /* 배경 이미지 레이어: 이미지가 없으면 onerror로 숨겨져서 기존 배경색이 그대로 유지됨 */
+    .bg-image {
+      position: absolute;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      object-fit: cover;
+      z-index: 0;
+      opacity: var(--bg-opacity, 0.3); /* 0(투명) ~ 1(불투명) 사이 값으로 조절 가능 */
+    }
+    section > * {
+      position: relative;
+      z-index: 1;
+    }
+    section > .bg-image {
+      z-index: 0;
+    }
+
+    .edu-sub {
+      margin-top: 10px;
+      color: #555;
+      font-size: 0.95em;
+    }
 
     .card {
       background: white;
@@ -157,11 +184,13 @@
 
     <!-- 첫 화면 -->
     <section id="home" class="visible">
+      <img class="bg-image" src="bg0.jpg" alt="" onerror="this.remove();">
       <header>
         <img src="profile.jpg" alt="내 사진" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
         <div class="avatar-fallback">홍</div>
         <h1>홍길동</h1>
         <nav>
+          <a href="#education">학력</a>
           <a href="#career">경력</a>
           <a href="#skills">스킬</a>
           <a href="#portfolio">포트폴리오</a>
@@ -170,8 +199,24 @@
       </header>
     </section>
 
+    <!-- 학력 -->
+    <section id="education">
+        <img class="bg-image" src="bg1.jpg" alt="" onerror="this.remove();">
+        <h2>학력</h2>
+        <div class="card">
+            <h3>○○대학교 컴퓨터공학과</h3>
+            <p class="edu-sub">2014.03 - 2018.02</p>
+        </div>
+        <h2>교육기간</h2>
+        <div class="card">
+            <h3>증강현실(AR) 전문 교육기관</h3>
+            <p class="edu-sub">참조은 학원</p>
+        </div>
+    </section>
+
     <!-- 경력 -->
     <section id="career">
+      <img class="bg-image" src="bg2.jpg" alt="" onerror="this.remove();">
       <h2>경력</h2>
       <div class="card">
         <h3>○○ 회사 (2020 - 현재)</h3>
@@ -185,6 +230,7 @@
 
     <!-- 스킬 -->
     <section id="skills">
+      <img class="bg-image" src="bg3.jpg" alt="" onerror="this.remove();">
       <h2>스킬</h2>
       <ul class="skills">
         <li>HTML</li>
@@ -198,6 +244,7 @@
 
     <!-- 포트폴리오 -->
     <section id="portfolio">
+      <img class="bg-image" src="bg4.jpg" alt="" onerror="this.remove();">
       <h2>포트폴리오</h2>
       <div class="card">
         <h3>프로젝트 A</h3>
@@ -211,6 +258,7 @@
 
     <!-- 자기소개 -->
     <section id="about">
+      <img class="bg-image" src="bg5.jpg" alt="" onerror="this.remove();">
       <h2>자기소개</h2>
       <div class="card">
         <p>안녕하세요! 저는 웹 개발자 홍길동입니다.
