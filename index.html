@@ -8,6 +8,7 @@
     html, body {
       margin: 0;
       height: 100%;
+      overflow: hidden; /* 바깥쪽 기본 스크롤바 제거 */
       font-family: 'Segoe UI', sans-serif;
     }
 
@@ -18,6 +19,11 @@
       overflow-y: scroll;
       scroll-snap-type: y mandatory;
       scroll-behavior: smooth;
+      scrollbar-width: none;       /* Firefox: 스크롤바 숨김 */
+      -ms-overflow-style: none;    /* IE/Edge: 스크롤바 숨김 */
+    }
+    .slides::-webkit-scrollbar {
+      display: none;               /* Chrome/Safari: 스크롤바 숨김 */
     }
 
     section {
