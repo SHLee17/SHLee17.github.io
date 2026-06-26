@@ -89,10 +89,8 @@
       color: #ffd700;
     }
 
-    #education { background: #ede7f6; }
-    #career { background: #f9f9f9; }
-    #skills { background: #e3f2fd; }
-    #portfolio { background: #fff3e0; }
+    #education-career { background: #ede7f6; }
+    #skills-portfolio { background: #e3f2fd; }
     #about { background: #f0f0f0; }
 
     /* 배경 이미지 레이어: 이미지가 없으면 onerror로 숨겨져서 기존 배경색이 그대로 유지됨 */
@@ -118,28 +116,136 @@
       font-size: 0.95em;
     }
 
+    /* 흰색 말풍선(카드) - 배경 투명도는 --card-opacity 로 조절 (0~1) */
     .card {
-      background: white;
-      margin: 20px;
+      background: rgba(255, 255, 255, var(--card-opacity, 0.5));
+      margin: 10px;
       padding: 20px;
-      max-width: 600px;
+      max-width: 280px;
       border-radius: 12px;
       box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+      flex: 0 0 auto;
+    }
+
+    /* 스크롤로 나타나는 애니메이션: 투명+아래쪽 -> 불투명+원위치 */
+    .reveal {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: opacity 0.7s ease, transform 0.7s ease;
+    }
+    .reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* 학력+경력: 가로로 쭉 나열 (스크롤바는 숨김) */
+    .row-scroll {
+      display: flex;
+      flex-direction: row;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      gap: 30px;
+      max-width: 100%;
+      padding: 10px 0;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .row-scroll::-webkit-scrollbar { display: none; }
+
+    .ec-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      flex: 0 0 auto;
+      min-width: 180px;
+    }
+    .ec-label {
+      margin: 0;
+      color: #555;
+      font-size: 1.1em;
+      padding-bottom: 6px;
+      border-bottom: 2px solid #667eea;
+    }
+
+    /* 스킬+포트폴리오 합친 섹션 */
+    .combo-wrap {
+      width: 100%;
+      max-width: 900px;
+      overflow-y: auto;
+      max-height: calc(100% - 60px);
+      padding: 0 10px;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+    }
+    .combo-wrap::-webkit-scrollbar { display: none; }
+    .combo-wrap h2 { margin-top: 0; }
+    .combo-divider {
+      margin: 30px 0 15px;
+      font-size: 1.1em;
+      font-weight: bold;
+      color: #444;
+      text-align: center;
+    }
+
+    /* 스킬 설명용 별도 카드 영역 */
+    .skill-notes {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 16px;
+    }
+    .skill-notes .card {
+      max-width: 260px;
+      padding: 14px 18px;
+    }
+    .skill-notes .card strong {
+      color: #667eea;
+    }
+    .skill-notes .card p {
+      margin: 6px 0 0;
+      font-size: 0.9em;
+      color: #555;
     }
 
     ul.skills {
       list-style: none;
       padding: 0;
+      margin: 0;
       text-align: center;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
     }
     ul.skills li {
-      display: inline-block;
-      margin: 10px;
-      padding: 10px 20px;
       background: #667eea;
       color: white;
-      border-radius: 20px;
+      border-radius: 16px;
       font-weight: bold;
+      padding: 10px 18px;
+      max-width: 220px;
+    }
+    ul.skills li .skill-desc {
+      display: block;
+      margin-top: 6px;
+      font-size: 0.8em;
+      font-weight: normal;
+      color: #eef;
+      white-space: normal;
+    }
+
+    .portfolio-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      margin-top: 10px;
+    }
+    .portfolio-grid .card {
+      max-width: none;
+      margin: 0;
     }
 
     /* 슬라이드 진행 표시(우측 점 네비게이션) - PPT 느낌 강화 */
@@ -190,77 +296,87 @@
         <div class="avatar-fallback">홍</div>
         <h1>홍길동</h1>
         <nav>
-          <a href="#education">학력</a>
-          <a href="#career">경력</a>
-          <a href="#skills">스킬</a>
-          <a href="#portfolio">포트폴리오</a>
+          <a href="#education-career">학력·경력</a>
+          <a href="#skills-portfolio">스킬·포트폴리오</a>
           <a href="#about">자기소개</a>
         </nav>
       </header>
     </section>
 
-    <!-- 학력 -->
-    <section id="education">
-        <img class="bg-image" src="bg1.jpg" alt="" onerror="this.remove();">
-        <h2>학력</h2>
-        <div class="card">
+    <!-- 학력 + 경력 (가로 나열) -->
+    <section id="education-career">
+      <img class="bg-image" src="bg1.jpg" alt="" onerror="this.remove();">
+      <h2>학력 · 교육 · 경력</h2>
+      <div class="row-scroll">
+        <div class="ec-group reveal">
+          <h3 class="ec-label">학력</h3>
+          <div class="card">
             <h3>○○대학교 컴퓨터공학과</h3>
             <p class="edu-sub">2014.03 - 2018.02</p>
+          </div>
         </div>
-        <h2>교육기간</h2>
-        <div class="card">
+        <div class="ec-group reveal">
+          <h3 class="ec-label">교육</h3>
+          <div class="card">
             <h3>증강현실(AR) 전문 교육기관</h3>
             <p class="edu-sub">참조은 학원</p>
+          </div>
         </div>
+        <div class="ec-group reveal">
+          <h3 class="ec-label">경력</h3>
+          <div class="card">
+            <h3>○○ 회사 (2020 - 현재)</h3>
+            <p>웹 개발자로 근무하며 프론트엔드 및 백엔드 프로젝트 담당</p>
+          </div>
+          <div class="card">
+            <h3>△△ 스타트업 (2018 - 2020)</h3>
+            <p>프론트엔드 엔지니어로 React 기반 서비스 개발</p>
+          </div>
+        </div>
+      </div>
     </section>
 
-    <!-- 경력 -->
-    <section id="career">
+    <!-- 스킬 + 포트폴리오 (스킬 위, 포트폴리오 격자 아래) -->
+    <section id="skills-portfolio">
       <img class="bg-image" src="bg2.jpg" alt="" onerror="this.remove();">
-      <h2>경력</h2>
-      <div class="card">
-        <h3>○○ 회사 (2020 - 현재)</h3>
-        <p>웹 개발자로 근무하며 프론트엔드 및 백엔드 프로젝트 담당</p>
-      </div>
-      <div class="card">
-        <h3>△△ 스타트업 (2018 - 2020)</h3>
-        <p>프론트엔드 엔지니어로 React 기반 서비스 개발</p>
-      </div>
-    </section>
+      <div class="combo-wrap">
+        <h2>스킬</h2>
+        <ul class="skills">
+          <li class="reveal">HTML</li>
+          <li class="reveal">CSS</li>
+          <li class="reveal">JavaScript</li>
+          <li class="reveal">React</li>
+          <li class="reveal">Node.js</li>
+          <li class="reveal">Git/GitHub</li>
+          <li class="reveal">C#</li>
+        </ul>
 
-    <!-- 스킬 -->
-    <section id="skills">
-      <img class="bg-image" src="bg3.jpg" alt="" onerror="this.remove();">
-      <h2>스킬</h2>
-      <ul class="skills">
-        <li>HTML</li>
-        <li>CSS</li>
-        <li>JavaScript</li>
-        <li>React</li>
-        <li>Node.js</li>
-        <li>Git/GitHub</li>
-      </ul>
-    </section>
+        <div class="skill-notes">
+          <div class="card reveal">
+            <strong>C#</strong>
+            <p>유니티 기반 게임/AR 프로젝트에서 사용</p>
+          </div>
+        </div>
 
-    <!-- 포트폴리오 -->
-    <section id="portfolio">
-      <img class="bg-image" src="bg4.jpg" alt="" onerror="this.remove();">
-      <h2>포트폴리오</h2>
-      <div class="card">
-        <h3>프로젝트 A</h3>
-        <p>React 기반 웹앱, 사용자 인증 및 데이터 시각화 기능 구현</p>
-      </div>
-      <div class="card">
-        <h3>프로젝트 B</h3>
-        <p>Node.js API 서버, RESTful 엔드포인트 설계 및 배포</p>
+        <div class="combo-divider">포트폴리오</div>
+        <div class="portfolio-grid">
+          <div class="card reveal">
+            <h3>프로젝트 A</h3>
+            <p>React 기반 웹앱, 사용자 인증 및 데이터 시각화 기능 구현</p>
+          </div>
+          <div class="card reveal">
+            <h3>프로젝트 B</h3>
+            <p>Node.js API 서버, RESTful 엔드포인트 설계 및 배포</p>
+          </div>
+        </div>
       </div>
     </section>
 
     <!-- 자기소개 -->
     <section id="about">
-      <img class="bg-image" src="bg5.jpg" alt="" onerror="this.remove();">
+      <img class="bg-image" src="bg3.jpg" alt="" onerror="this.remove();">
       <h2>자기소개</h2>
-      <div class="card">
+      <div class="card reveal">
         <p>안녕하세요! 저는 웹 개발자 홍길동입니다.
         새로운 기술을 배우고 적용하는 것을 좋아하며, 사용자 경험을 개선하는 데 관심이 많습니다.
         앞으로도 다양한 프로젝트를 통해 성장하고 싶습니다.</p>
@@ -303,6 +419,19 @@
     }, { threshold: [0.5] });
 
     sections.forEach(section => observer.observe(section));
+
+    // 카드/스킬 등 개별 요소: 투명+아래에서 -> 불투명+원위치 애니메이션
+    const revealEls = Array.from(document.querySelectorAll('.reveal'));
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in-view');
+        } else {
+          entry.target.classList.remove('in-view'); // 다시 스크롤하면 재생되도록
+        }
+      });
+    }, { threshold: 0.2 });
+    revealEls.forEach(el => revealObserver.observe(el));
 
     // 방향키(↑↓)로 PPT처럼 한 슬라이드씩 이동
     document.addEventListener('keydown', (e) => {
